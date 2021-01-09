@@ -9,46 +9,26 @@ var crypto = require('crypto');
 var Promise = require('bluebird');
 
 // (1) Asyncronous HTTP request
-// var getGitHubProfile = function (user, callback) {
-//   var options = {
-//     url: 'https://api.github.com/users/' + user,
-//     headers: { 'User-Agent': 'request' },
-//     json: true
-//   };
+var getGitHubProfile = function (user, callback) {
+  var options = {
+    url: 'https://api.github.com/users/' + user,
+    headers: { 'User-Agent': 'request' },
+    json: true
+  };
 
-//   request.get(options, function (err, res, body) {
-//     if (err) {
-//       callback(err, null);
-//     } else if (body.message) {
-//       callback(new Error('Failed to get GitHub profile: ' + body.message), null);
-//     } else {
-//       callback(null, body);
-//     }
-//   });
-// };
-
-var getGitHubProfileAsync = function(user) {
-  return new Promise((resolve, reject) => {
-    var options = {
-      url: 'https://api.github.com/users/' + user,
-      headers: { 'User-Agent': 'request' },
-      json: true
-    };
-
-    request.get(options, function(err, res, body) {
-      if (err) {
-        reject(err);
-      } else if (body) {
-        reject(err);
-      } else {
-        resolve(body);
-      }
-    });
+  request.get(options, function (err, res, body) {
+    // console.log('body:', body);
+    if (err) {
+      callback(err, null);
+    } else if (body.message) {
+      callback(new Error('Failed to get GitHub profile: ' + body.message), null);
+    } else {
+      callback(null, body);
+    }
   });
 };
 
-// var getGitHubProfileAsync = Promise.promisify(getGitHubProfile);
-
+var getGitHubProfileAsync = Promise.promisify(getGitHubProfile);
 
 // (2) Asyncronous token generation
 var generateRandomToken = function (callback) {
@@ -59,7 +39,6 @@ var generateRandomToken = function (callback) {
 };
 
 var generateRandomTokenAsync = Promise.promisify(generateRandomToken);
-
 
 // (3) Asyncronous file manipulation
 
@@ -77,24 +56,8 @@ var readFileAndMakeItFunny = function(filePath, callback) {
   });
 };
 
-var readFileAndMakeItFunnyAsync = function(filePath, callback) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, 'utf8', function(err, file) {
-      if (err) {
-        reject(err);
-      } else {
-        var funnyFile = file.split('\n')
-          .map(function(line) {
-            return line + ' lol';
-          })
-          .join('\n');
-        resolve(funnyFile);
-      }
-    });
-  });
-};
 
-// var readFileAndMakeItFunnyAsync = Promise.promisify(readFileAndMakeItFunny);
+var readFileAndMakeItFunnyAsync = Promise.promisify(readFileAndMakeItFunny);
 
 // Export these functions so we can test them and reuse them in later exercises
 module.exports = {
